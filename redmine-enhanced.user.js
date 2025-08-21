@@ -1,7 +1,8 @@
+
 // ==UserScript==
 // @name         Redmine 增强插件（稳定版）
 // @namespace    http://tampermonkey.net/
-// @version      1.4
+// @version      1.5
 // @description  新建/编辑 BUG 自动填充模版，兼容 Chrome/Edge/Firefox，多新建地址
 // @match        https://redmine.jztylxx.com/issues/*
 // @match        https://redmine.jztylxx.com/issues/new
@@ -24,12 +25,13 @@
         descriptionFieldId: 'issue_description',
         trackerContainerId: 'select2-issue_tracker_id-container',
         trackerTargetText: '项目缺陷',
-        descriptionTemplate: `【报错页面截图或者接口地址】
-【接口请求参数】
-【用户名/密码】
-【重现步骤】
-【期望值】
-【初步原因分析】`,
+        descriptionTemplate:  `【缺陷描述】：
+【缺陷截图/接口地址】：
+【接口请求参数】：
+【用户名/密码】：
+【重现步骤】：
+【预期】：
+【初步原因分析】：`,
 
         debug: false
     };
