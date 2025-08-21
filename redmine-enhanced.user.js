@@ -1,10 +1,11 @@
 // ==UserScript==
 // @name         Redmine 增强插件（稳定版）
 // @namespace    http://tampermonkey.net/
-// @version      1.3
-// @description  新建/编辑 BUG 自动填充模版，兼容 Chrome/Edge/Firefox
+// @version      1.4
+// @description  新建/编辑 BUG 自动填充模版，兼容 Chrome/Edge/Firefox，多新建地址
 // @match        https://redmine.jztylxx.com/issues/*
 // @match        https://redmine.jztylxx.com/issues/new
+// @match        https://redmine.jztylxx.com/projects/qxkpm/issues/new
 // @run-at       document-idle
 // @grant        none
 // ==/UserScript==
@@ -23,13 +24,12 @@
         descriptionFieldId: 'issue_description',
         trackerContainerId: 'select2-issue_tracker_id-container',
         trackerTargetText: '项目缺陷',
-        descriptionTemplate: `【缺陷描述】：
-【缺陷截图/接口地址】：
-【接口请求参数】：
-【用户名/密码】：
-【重现步骤】：
-【预期】：
-【初步原因分析】：`,
+        descriptionTemplate: `【报错页面截图或者接口地址】
+【接口请求参数】
+【用户名/密码】
+【重现步骤】
+【期望值】
+【初步原因分析】`,
 
         debug: false
     };
@@ -79,6 +79,7 @@
     }
 
     function initNewBug(){
+        // 轮询确保元素生成
         const intervalId = setInterval(()=>{
             const desc = getDescriptionField();
             const reason = getReasonField();
@@ -88,7 +89,7 @@
             }
         },150);
 
-        // 监听 select2 容器变化
+        // select2 变化监听
         const trackerEl = document.getElementById(CONFIG.trackerContainerId);
         if(trackerEl){
             const mo = new MutationObserver(()=>{ setTimeout(tryFillNewBug,50); });
@@ -124,7 +125,9 @@
 
     // ================== 主入口 ==================
     function main(){
-        if(location.pathname === '/issues/new'){
+        // 新建 BUG 页面 URL 列表
+        const newUrls = ['/issues/new','/projects/qxkpm/issues/new'];
+        if(newUrls.some(u=>location.pathname.startsWith(u))){
             initNewBug();
         } else if(/^\/issues\/\d+/.test(location.pathname)){
             initEditBug();
